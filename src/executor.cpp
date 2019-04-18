@@ -97,7 +97,7 @@ void Executor::Run(void* arg) {
   try {
     rcl_wait_set_t wait_set = rcl_get_zero_initialized_wait_set();
     rcl_ret_t ret = rcl_wait_set_init(&wait_set, 0, 2, 0, 0, 0,
-        executor->context_, rcl_get_default_allocator());
+         rcl_get_default_allocator());
     if (ret != RCL_RET_OK) {
       throw std::runtime_error(std::string("Init waitset failed: ") +
                                rcl_get_error_string().str);
