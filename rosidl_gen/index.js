@@ -62,9 +62,22 @@ async function generateInPath(path) {
   await Promise.all(results);
 }
 
-async function generateAll(forcedGenerating) {
+async function generatePackage(packageName) {
+  for (let pkgPath of  installedPackagePaths) {
+    let pkgMap = await packages.findPackagesInDirectory(pkgPath)
+    for ( let mappedPkg of pkgMap.values() ) {
+      if (mappedPkg.pkgName==packageName) {
+        let results = [generateInPath(pkgPath)]
+        return await Promise.all(results);
+      }
+    }
+  }
+  throw new Error("Message template generation failed : package not found: "+packageName)
+}
   const results = [];
 
+async function generateAll(forcedGenerating) {
+  const results = [];
   // If we want to create the JavaScript files compulsively (|forcedGenerating| equals to true)
   // or the JavaScript files have not been created (|exist| equals to false),
   // all the JavaScript files will be created.
@@ -84,6 +97,7 @@ const generator = {
     return fse.readJsonSync(path.join(__dirname, 'generator.json')).version;
   },
 
+  generatePackage,
   generateAll,
   generateInPath,
   generatedRoot
